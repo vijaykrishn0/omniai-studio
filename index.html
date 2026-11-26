@@ -26,7 +26,7 @@ main{padding:0 14px}
 .chip{background:#1c1c22;border:1px solid #27272a;color:#d4d4d8;padding:6px 12px;border-radius:10px;font-size:11px;white-space:nowrap;cursor:pointer}
 .chip.sel{background:#9333ea44;border-color:#a855f7;color:#fff;font-weight:700}
 textarea,input,select{width:100%;background:#0e0e11;border:1px solid #27272a;border-radius:12px;padding:10px;color:#fff;font-size:12px;outline:none;margin-top:6px}
-.cbox{height:290px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#0e0e11;border-radius:14px;border:1px solid #27272a}
+.cbox{height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#0e0e11;border-radius:14px;border:1px solid #27272a}
 .mai{background:#27272a;padding:10px;border-radius:14px 14px 14px 4px;max-width:88%;font-size:12px;line-height:1.4}
 .musr{background:linear-gradient(135deg,#7e22ce,#2563eb);padding:10px;border-radius:14px 14px 4px 14px;max-width:85%;align-self:flex-end;font-size:12px}
 .cbar{display:flex;gap:8px;margin-top:8px}
@@ -51,7 +51,7 @@ nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex
 <body>
 
 <header>
-  <div class="brand" onclick="adminTap()">
+  <div class="brand" id="brandLogo">
     <div class="logo">⚡</div>
     <div>
       <div style="font-size:15px;font-weight:700;">OmniAI <span style="font-size:10px;color:#34d399;background:#10b98122;padding:2px 6px;border-radius:6px;">LIVE 4K</span></div>
@@ -59,8 +59,8 @@ nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex
     </div>
   </div>
   <div style="display:flex;gap:6px;">
-    <button class="pill" onclick="openM('langM')"><span id="lFlag">🌐</span> <span id="lTxt">Auto</span></button>
-    <button class="pill grad" onclick="openM('keyM')" id="kBtn">🔑 My API Key</button>
+    <button class="pill" data-modal="langM"><span id="lFlag">🌐</span> <span id="lTxt">Auto</span></button>
+    <button class="pill grad" data-modal="keyM" id="kBtn">🔑 My API Key</button>
   </div>
 </header>
 
@@ -70,37 +70,36 @@ nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex
 </div>
 
 <div class="tabs">
-  <button class="tbtn act" id="tb-chat" onclick="goTab('chat')">✨ Omni-Chat</button>
-  <button class="tbtn" id="tb-court" onclick="goTab('court')">⚖️ AI Courtroom</button>
-  <button class="tbtn" id="tb-image" onclick="goTab('image')">🎨 Live Image</button>
-  <button class="tbtn" id="tb-video" onclick="goTab('video')">🎬 4K Video</button>
-  <button class="tbtn" id="tb-anim" onclick="goTab('anim')">🧸 3D & Cartoon</button>
-  <button class="tbtn" id="tb-swap" onclick="goTab('swap')">🎭 Face/Char Swap</button>
-  <button class="tbtn" id="tb-voice" onclick="goTab('voice')">🎙️ Voice Studio</button>
+  <button class="tbtn act" data-tab="chat">✨ Omni-Chat</button>
+  <button class="tbtn" data-tab="court">⚖️ AI Courtroom</button>
+  <button class="tbtn" data-tab="image">🎨 Live Image</button>
+  <button class="tbtn" data-tab="video">🎬 4K Video</button>
+  <button class="tbtn" data-tab="anim">🧸 3D & Cartoon</button>
+  <button class="tbtn" data-tab="swap">🎭 Face/Char Swap</button>
+  <button class="tbtn" data-tab="voice">🎙️ Voice Studio</button>
 </div>
 
 <main>
   <section id="vw-chat" class="vw">
     <div class="card">
       <div class="ch"><span>AI Brain Pool (20+ Models)</span><span class="tag" id="kBadge">Free Mode</span></div>
-      <div class="scroll">
-        <button class="chip sel" onclick="setMod(this,'Auto Router')">⚡ Auto Router</button>
-        <button class="chip" onclick="setMod(this,'Gemini 2.5')">Gemini 2.5</button>
-        <button class="chip" onclick="setMod(this,'ChatGPT o3')">ChatGPT o3</button>
-        <button class="chip" onclick="setMod(this,'Claude 3.7')">Claude 3.7</button>
-        <button class="chip" onclick="setMod(this,'DeepSeek R1')">DeepSeek R1</button>
-        <button class="chip" onclick="setMod(this,'Qwen 3')">Qwen 3</button>
-        <button class="chip" onclick="setMod(this,'Meta Llama 4')">Meta Llama 4</button>
-        <button class="chip" onclick="setMod(this,'Grok 3')">Grok 3</button>
-        <button class="chip" onclick="setMod(this,'Ollama')">Ollama</button>
+      <div class="scroll" id="modelList">
+        <button class="chip sel" data-mod="Auto Router">⚡ Auto Router</button>
+        <button class="chip" data-mod="Gemini 2.5">Gemini 2.5</button>
+        <button class="chip" data-mod="ChatGPT o3">ChatGPT o3</button>
+        <button class="chip" data-mod="Claude 3.7">Claude 3.7</button>
+        <button class="chip" data-mod="DeepSeek R1">DeepSeek R1</button>
+        <button class="chip" data-mod="Qwen 3">Qwen 3</button>
+        <button class="chip" data-mod="Meta Llama 4">Meta Llama 4</button>
+        <button class="chip" data-mod="Grok 3">Grok 3</button>
       </div>
     </div>
     <div class="cbox" id="cBox">
-      <div class="mai"><b style="color:#34d399;font-size:10px;">OmniAI Live • 🌐 100+ Languages</b><br>வணக்கம் மச்சான்! இப்போ எல்லா பட்டனும் சூப்பரா வேலை செய்யும்! தமிழ், Tanglish, Hindi, English எதுல வேணாலும் கேள்வி கேளு!</div>
+      <div class="mai"><b style="color:#34d399;font-size:10px;">OmniAI Live • 🌐 100+ Languages</b><br>வணக்கம் மச்சான்! இப்போ எல்லா பட்டனும் 100% வேலை செய்யும்! தமிழ், Tanglish, Hindi, English எதுல வேணாலும் கேள்வி கேளு!</div>
     </div>
     <div class="cbar">
       <input type="text" id="cInp" placeholder="Type in தமிழ், Tanglish, Hindi, English...">
-      <button class="sbtn" onclick="sendMsg()">➤</button>
+      <button class="sbtn" id="sendBtn">➤</button>
     </div>
   </section>
 
@@ -108,12 +107,12 @@ nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex
     <div class="card">
       <div class="ch"><span style="color:#fbbf24;">⚖️ Live AI Courtroom</span><span class="tag">User Choice</span></div>
       <div class="g3">
-        <div><label style="font-size:10px;color:#34d399;">👨‍⚖️ Lawyer 1</label><select id="l1"><option>Gemini 2.5</option><option>ChatGPT o3</option><option>Claude 3.7</option><option>DeepSeek R1</option><option>Grok 3</option></select></div>
-        <div><label style="font-size:10px;color:#f472b6;">👩‍⚖️ Lawyer 2</label><select id="l2"><option>DeepSeek R1</option><option>Claude 3.7</option><option>ChatGPT o3</option><option>Gemini 2.5</option><option>Grok 3</option></select></div>
+        <div><label style="font-size:10px;color:#34d399;">👨‍⚖️ Lawyer 1</label><select id="l1"><option>Gemini 2.5</option><option>ChatGPT o3</option><option>Claude 3.7</option><option>DeepSeek R1</option></select></div>
+        <div><label style="font-size:10px;color:#f472b6;">👩‍⚖️ Lawyer 2</label><select id="l2"><option>DeepSeek R1</option><option>Claude 3.7</option><option>ChatGPT o3</option><option>Gemini 2.5</option></select></div>
         <div><label style="font-size:10px;color:#fbbf24;">⚖️ Judge</label><select id="jg"><option>Claude 3.7</option><option>ChatGPT o3</option><option>Gemini 2.5</option><option>DeepSeek R1</option></select></div>
       </div>
       <textarea id="cTop" rows="2" placeholder="Debate Topic (e.g., AI மனிதர்களுக்கு வரமா சாபமா?)"></textarea>
-      <button class="abtn" style="background:linear-gradient(90deg,#f59e0b,#ea580c);color:#000;" onclick="runCourt()">🔨 Start Live Debate & Verdict</button>
+      <button class="abtn" style="background:linear-gradient(90deg,#f59e0b,#ea580c);color:#000;" id="courtBtn">🔨 Start Live Debate & Verdict</button>
       <div id="cOut" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;font-size:12px;"></div>
     </div>
   </section>
@@ -123,8 +122,8 @@ nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex
       <div class="ch"><span>🎨 Live 4K Image & Text</span><span class="tag">100+ Lang Typography</span></div>
       <textarea id="iPrm" rows="3" placeholder="Describe image + text in Tamil/English/Hindi..."></textarea>
       <div class="g2">
-        <div class="sbox sel" onclick="this.classList.toggle('sel')">🔤 100+ Lang Text</div>
-        <div class="sbox" onclick="this.classList.toggle('sel')">📸 85mm Studio Lens</div>
+        <div class="sbox sel tog">🔤 100+ Lang Text</div>
+        <div class="sbox tog">📸 85mm Studio Lens</div>
       </div>
     </div>
   </section>
@@ -134,4 +133,17 @@ nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex
       <div class="ch"><span>🎬 4K Cinema Video & Director</span><span class="tag">Higgsfield + Kling 3.0</span></div>
       <textarea id="vPrm" rows="2" placeholder="Describe video scene or full short story..."></textarea>
       <div class="scroll" style="margin-top:8px;">
-        
+        <button class="chip sel tog">Drone FPV</button>
+        <button class="chip tog">Dolly Zoom</button>
+        <button class="chip tog">360 Orbit</button>
+        <button class="chip tog">Bullet Time</button>
+        <button class="chip tog">Crane Up</button>
+        <button class="chip tog">Snorricam</button>
+        <button class="chip tog">120fps Slow-Mo</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="vw-anim" class="vw hidden">
+    <div class="card">
+      
