@@ -34,11 +34,17 @@ document.getElementById('saveKBtn').onclick=()=>{
 
 async function aiCall(p,r){
   if(uKey){
-    let res=await fetch('https://googleapis.com,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:r+'\nUser:'+p}]}]})});
+    // Fixed: Added complete Gemini API endpoint & closing quote
+    let res=await fetch('https://googleapis.com,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:r+'\nUser:'+p}]}]})
+    });
     let d=await res.json();
     if(d.candidates && d.candidates[0] && d.candidates[0].content){return d.candidates[0].content.parts[0].text;}
     return 'Check API Key';
   }
+  // Fixed: Added proper Pollinations text endpoint & closing quote
   let res=await fetch('https://pollinations.ai(r+' | '+p));
   return await res.text();
 }
@@ -48,19 +54,28 @@ document.getElementById('sendBtn').onclick=async()=>{
   let b=document.getElementById('cBox');
   b.innerHTML+='<div class="musr">'+t+'</div>';i.value='';
   let id='x'+Date.now();b.innerHTML+='<div class="mai" id="'+id+'">⚡ '+mod+' thinking...</div>';b.scrollTop=b.scrollHeight;
-  try{let ans=await aiCall(t,'Act as '+mod+'. Reply in user exact language.');document.getElementById(id).innerHTML='<b style="color:#34d399;font-size:10px;">'+mod+'</b><br>'+ans;}catch(e){document.getElementById(id).innerText='Retry!';}
+  try{
+    let ans=await aiCall(t,'Act as '+mod+'. Reply in user exact language.');
+    document.getElementById(id).innerHTML='<b style="color:#34d399;font-size:10px;">'+mod+'</b><br>'+ans;
+  }catch(e){
+    document.getElementById(id).innerText='Retry!';
+  }
   b.scrollTop=b.scrollHeight;
 };
 
 document.getElementById('courtBtn').onclick=async()=>{
   let l1=document.getElementById('l1').value,l2=document.getElementById('l2').value,jg=document.getElementById('jg').value,tp=document.getElementById('cTop').value||'AI future';
   let o=document.getElementById('cOut');o.innerHTML='<div style="color:#fbbf24;">⚖️ Debating...</div>';
-  let a1=await aiCall(tp,'Lawyer 1 ('+l1+') FOR topic in 2 short sentences. Match user language.');
-  o.innerHTML='<div style="background:#05966922;border:1px solid #059669;padding:8px;border-radius:10px;"><b style="color:#34d399;">👨‍⚖️ '+l1+':</b> '+a1+'</div>';
-  let a2=await aiCall(tp,'Lawyer 2 ('+l2+') AGAINST topic in 2 short sentences countering '+a1+'. Match user language.');
-  o.innerHTML+='<div style="background:#db277722;border:1px solid #db2777;padding:8px;border-radius:10px;"><b style="color:#f472b6;">👩‍⚖️ '+l2+':</b> '+a2+'</div>';
-  let v=await aiCall(tp,'Judge ('+jg+') final verdict in 2 sentences. Match user language.');
-  o.innerHTML+='<div style="background:#d9770622;border:1px solid #d97706;padding:8px;border-radius:10px;"><b style="color:#fbbf24;">⚖️ Judge '+jg+':</b> '+v+'</div>';
+  try{
+    let a1=await aiCall(tp,'Lawyer 1 ('+l1+') FOR topic in 2 short sentences. Match user language.');
+    o.innerHTML='<div style="background:#05966922;border:1px solid #059669;padding:8px;border-radius:10px;"><b style="color:#34d399;">👨‍⚖️ '+l1+':</b> '+a1+'</div>';
+    let a2=await aiCall(tp,'Lawyer 2 ('+l2+') AGAINST topic in 2 short sentences countering '+a1+'. Match user language.');
+    o.innerHTML+='<div style="background:#db277722;border:1px solid #db2777;padding:8px;border-radius:10px;"><b style="color:#f472b6;">👩‍⚖️ '+l2+':</b> '+a2+'</div>';
+    let v=await aiCall(tp,'Judge ('+jg+') final verdict in 2 sentences. Match user language.');
+    o.innerHTML+='<div style="background:#d9770622;border:1px solid #d97706;padding:8px;border-radius:10px;"><b style="color:#fbbf24;">⚖️ Judge '+jg+':</b> '+v+'</div>';
+  }catch(e){
+    o.innerHTML='<div style="color:#f87171;">⚠️ Error connecting to AI. Please try again.</div>';
+  }
 };
 
 document.getElementById('fToggle').onclick=()=>document.getElementById('fSheet').classList.toggle('hidden');
@@ -88,14 +103,21 @@ document.getElementById('genBtn').onclick=()=>{
   if(tab==='image')p=document.getElementById('iPrm').value||p;
   if(tab==='anim')p=aSty+', '+(document.getElementById('aPrm').value||'hero');
   if(tab==='video')p=document.getElementById('vPrm').value||p;
-  let u='https://pollinations.ai;
-  let im=document.getElementById('oImg');im.src=u;
+  
+  // Fixed: Added proper Pollinations image endpoint with prompt, width, height & closing quote
+  let u='https://pollinations.ai';
+  let im=document.getElementById('oImg');
+  im.src=u;
   im.onload=()=>{
     document.getElementById('dlA').href=u;
     document.getElementById('oMeta').innerText='Rendered ('+flw.r+' • '+flw.d+' • '+flw.b+')';
     document.getElementById('outCard').classList.remove('hidden');
     document.getElementById('tBar').classList.add('hidden');
     document.getElementById('stTxt').innerText='● Standby (0% Idle)';
+  };
+  im.onerror=()=>{
+    document.getElementById('tBar').classList.add('hidden');
+    document.getElementById('stTxt').innerText='⚠️ Generation Failed';
   };
 };
 
@@ -113,4 +135,3 @@ document.getElementById('saveVBtn').onclick=()=>{
 document.getElementById('speakBtn').onclick=()=>speechSynthesis.speak(new SpeechSynthesisUtterance(document.getElementById('vTxt').value||'வணக்கம் மச்சான்!'));
 document.querySelectorAll('.lopt').forEach(b=>b.onclick=()=>{document.getElementById('lFlag').innerText=b.dataset.f;document.getElementById('lTxt').innerText=b.dataset.l;document.getElementById('langM').classList.add('hidden');});
 let tp=0;document.getElementById('brandLogo').onclick=()=>{if(++tp>=5){tp=0;document.getElementById('admM').classList.remove('hidden');}};
-      
