@@ -1,139 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#09090b">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>OmniAI 4K Studio — All-in-One AI Super App</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: #09090b; color: #f4f4f5; padding-bottom: 130px; overflow-x: hidden; }
-    .hidden { display: none !important; }
-    
-    /* Header */
-    header { position: sticky; top: 0; z-index: 40; background: rgba(15, 15, 20, 0.88); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-    .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .logo-box { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #9333ea, #2563eb, #10b981); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
-    .brand-title { font-size: 16px; font-weight: 700; }
-    .badge-live { font-size: 10px; color: #34d399; background: rgba(16,185,129,0.15); padding: 2px 6px; border-radius: 6px; margin-left: 4px; }
-    .status-line { font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: #71717a; display: inline-block; }
-    .dot.active { background: #10b981; box-shadow: 0 0 8px #10b981; }
-
-    .header-btns { display: flex; gap: 8px; }
-    .pill-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .btn-grad { background: linear-gradient(90deg, #9333ea, #2563eb); border: none; }
-
-    /* Telemetry Bar */
-    .telemetry { margin: 12px 16px 0; padding: 12px; border-radius: 16px; background: linear-gradient(90deg, rgba(49,46,129,0.7), rgba(88,28,135,0.7)); border: 1px solid rgba(168,85,247,0.4); }
-    .tele-top { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; color: #e9d5ff; font-weight: 600; }
-    .prog-bg { width: 100%; height: 6px; background: #27272a; border-radius: 10px; overflow: hidden; }
-    .prog-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #a855f7, #10b981); transition: width 0.3s; }
-    .tele-sub { display: flex; justify-content: space-between; font-size: 10px; color: #a1a1aa; margin-top: 6px; }
-
-    /* Horizontal Tabs */
-    .tabs-row { display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px; scrollbar-width: none; }
-    .tabs-row::-webkit-scrollbar { display: none; }
-    .tab-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #d4d4d8; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
-    .tab-btn.active { background: #ffffff; color: #09090b; border-color: #ffffff; }
-
-    /* Cards & Containers */
-    main { padding: 0 16px; }
-    .card { background: rgba(24, 24, 29, 0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 14px; margin-bottom: 12px; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; font-weight: 700; }
-    .tag { font-size: 10px; padding: 3px 8px; border-radius: 10px; background: rgba(168,85,247,0.2); color: #d8b4fe; }
-
-    /* Chips & Inputs */
-    .chips-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-    .chips-scroll::-webkit-scrollbar { display: none; }
-    .chip { background: #18181b; border: 1px solid #27272a; color: #d4d4d8; padding: 6px 12px; border-radius: 10px; font-size: 11px; white-space: nowrap; cursor: pointer; }
-    .chip.selected { background: rgba(147,51,234,0.3); border-color: #a855f7; color: #fff; font-weight: 600; }
-
-    textarea, input[type="text"], input[type="password"], select { width: 100%; background: #121215; border: 1px solid #27272a; border-radius: 12px; padding: 10px 12px; color: #fff; font-size: 12px; outline: none; margin-top: 6px; }
-    textarea:focus, input:focus { border-color: #9333ea; }
-
-    /* Chat Box */
-    .chat-box { height: 310px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 10px; background: #121215; border-radius: 16px; border: 1px solid #27272a; }
-    .msg-ai { background: #27272a; padding: 10px 12px; border-radius: 16px 16px 16px 4px; max-width: 88%; font-size: 12px; line-height: 1.5; }
-    .msg-user { background: linear-gradient(135deg, #7e22ce, #2563eb); padding: 10px 12px; border-radius: 16px 16px 4px 16px; max-width: 85%; align-self: flex-end; font-size: 12px; }
-    .chat-input-bar { display: flex; gap: 8px; margin-top: 10px; }
-    .chat-input-bar input { margin-top: 0; border-radius: 20px; }
-    .send-btn { width: 42px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #9333ea, #2563eb); border: none; color: #fff; font-weight: bold; cursor: pointer; flex-shrink: 0; }
-
-    /* Grid Layouts */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
-    .style-box { background: #121215; border: 1px solid #27272a; border-radius: 12px; padding: 10px 6px; text-align: center; font-size: 11px; cursor: pointer; }
-    .style-box.selected { border-color: #06b6d4; background: rgba(6,182,212,0.18); font-weight: 700; }
-
-    .action-btn { width: 100%; padding: 12px; border-radius: 14px; border: none; background: linear-gradient(90deg, #9333ea, #2563eb, #10b981); color: #fff; font-weight: 700; font-size: 13px; margin-top: 10px; cursor: pointer; }
-
-    /* Google Flow Floating Dock */
-    .flow-dock { position: fixed; bottom: 58px; left: 12px; right: 12px; z-index: 35; }
-    .flow-sheet { background: #18181b; border: 1px solid rgba(255,255,255,0.15); border-radius: 22px; padding: 14px; margin-bottom: 8px; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); }
-    .flow-pill { background: rgba(24,24,28,0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 6px 6px 6px 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.8); }
-    .flow-trigger { background: none; border: none; color: #e4e4e7; font-size: 11px; font-weight: 600; cursor: pointer; }
-    .flow-gen-btn { background: #ffffff; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; }
-
-    /* Bottom Nav */
-    nav { position: fixed; bottom: 0; left: 0; right: 0; height: 52px; background: rgba(12,12,15,0.95); border-top: 1px solid #27272a; display: flex; justify-content: space-around; align-items: center; z-index: 40; }
-    nav button { background: none; border: none; color: #a1a1aa; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
-    nav button.active { color: #ffffff; font-weight: 700; }
-
-    /* Modals */
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.82); backdrop-filter: blur(6px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
-    .modal-card { background: #18181b; border: 1px solid #3f3f46; border-radius: 24px; padding: 18px; width: 100%; max-width: 360px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>OmniAI 4K Studio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#09090b;color:#f4f4f5;padding-bottom:130px}
+.hidden{display:none!important}
+header{position:sticky;top:0;z-index:40;background:#0f0f14ee;backdrop-filter:blur(12px);border-bottom:1px solid #27272a;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#9333ea,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;font-weight:700}
+.pill{background:#18181b;border:1px solid #27272a;color:#fff;padding:6px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer}
+.grad{background:linear-gradient(90deg,#9333ea,#2563eb);border:none}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tbtn{background:#18181b;border:1px solid #27272a;color:#d4d4d8;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}
+.tbtn.act{background:#fff;color:#000;border-color:#fff}
+main{padding:0 14px}
+.card{background:#141418;border:1px solid #27272a;border-radius:18px;padding:14px;margin-bottom:12px}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;font-weight:700}
+.tag{font-size:10px;padding:3px 8px;border-radius:8px;background:#9333ea33;color:#d8b4fe}
+.scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.chip{background:#1c1c22;border:1px solid #27272a;color:#d4d4d8;padding:6px 12px;border-radius:10px;font-size:11px;white-space:nowrap;cursor:pointer}
+.chip.sel{background:#9333ea44;border-color:#a855f7;color:#fff;font-weight:700}
+textarea,input,select{width:100%;background:#0e0e11;border:1px solid #27272a;border-radius:12px;padding:10px;color:#fff;font-size:12px;outline:none;margin-top:6px}
+.cbox{height:290px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#0e0e11;border-radius:14px;border:1px solid #27272a}
+.mai{background:#27272a;padding:10px;border-radius:14px 14px 14px 4px;max-width:88%;font-size:12px;line-height:1.4}
+.musr{background:linear-gradient(135deg,#7e22ce,#2563eb);padding:10px;border-radius:14px 14px 4px 14px;max-width:85%;align-self:flex-end;font-size:12px}
+.cbar{display:flex;gap:8px;margin-top:8px}
+.cbar input{margin-top:0;border-radius:20px}
+.sbtn{width:40px;height:38px;border-radius:50%;background:linear-gradient(135deg,#9333ea,#2563eb);border:none;color:#fff;font-weight:700;flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.sbox{background:#0e0e11;border:1px solid #27272a;border-radius:12px;padding:10px 6px;text-align:center;font-size:11px;cursor:pointer}
+.sbox.sel{border-color:#06b6d4;background:#06b6d422;font-weight:700}
+.abtn{width:100%;padding:12px;border-radius:14px;border:none;background:linear-gradient(90deg,#9333ea,#2563eb,#10b981);color:#fff;font-weight:700;font-size:13px;margin-top:10px;cursor:pointer}
+.dock{position:fixed;bottom:56px;left:12px;right:12px;z-index:35}
+.sheet{background:#18181b;border:1px solid #3f3f46;border-radius:20px;padding:12px;margin-bottom:8px}
+.fpill{background:#18181bf2;border:1px solid #3f3f46;border-radius:30px;padding:6px 6px 6px 14px;display:flex;justify-content:space-between;align-items:center}
+.fgen{background:#fff;color:#000;border:none;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700}
+nav{position:fixed;bottom:0;left:0;right:0;height:50px;background:#0c0c0f;border-top:1px solid #27272a;display:flex;justify-content:space-around;align-items:center;z-index:40}
+nav button{background:none;border:none;color:#a1a1aa;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.mbg{position:fixed;inset:0;background:#000000cc;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.mcard{background:#18181b;border:1px solid #3f3f46;border-radius:22px;padding:16px;width:100%;max-width:350px}
+</style>
 </head>
 <body>
 
-  <!-- TOP HEADER -->
-  <header>
-    <div class="brand" onclick="secretAdminTap()">
-      <div class="logo-box">⚡</div>
-      <div>
-        <div class="brand-title">OmniAI <span class="badge-live">LIVE 4K</span></div>
-        <div class="status-line"><span class="dot" id="engineDot"></span><span id="engineStatus">Standby (0% Idle)</span></div>
+<header>
+  <div class="brand" onclick="adminTap()">
+    <div class="logo">⚡</div>
+    <div>
+      <div style="font-size:15px;font-weight:700;">OmniAI <span style="font-size:10px;color:#34d399;background:#10b98122;padding:2px 6px;border-radius:6px;">LIVE 4K</span></div>
+      <div style="font-size:10px;color:#a1a1aa;" id="stTxt">● Standby (0% Idle)</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;">
+    <button class="pill" onclick="openM('langM')"><span id="lFlag">🌐</span> <span id="lTxt">Auto</span></button>
+    <button class="pill grad" onclick="openM('keyM')" id="kBtn">🔑 My API Key</button>
+  </div>
+</header>
+
+<div id="tBar" class="card hidden" style="margin:10px 14px 0;background:linear-gradient(90deg,#312e81,#581c87);border-color:#a855f7;">
+  <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;"><span>⚡ On-Demand Burst Active</span><span style="color:#34d399;">500KB TurboQuant</span></div>
+  <div style="font-size:10px;color:#d4d4d8;margin-top:4px;">90% Quota Guard Safe • 3s Heartbeat • Drive Vault</div>
+</div>
+
+<div class="tabs">
+  <button class="tbtn act" id="tb-chat" onclick="goTab('chat')">✨ Omni-Chat</button>
+  <button class="tbtn" id="tb-court" onclick="goTab('court')">⚖️ AI Courtroom</button>
+  <button class="tbtn" id="tb-image" onclick="goTab('image')">🎨 Live Image</button>
+  <button class="tbtn" id="tb-video" onclick="goTab('video')">🎬 4K Video</button>
+  <button class="tbtn" id="tb-anim" onclick="goTab('anim')">🧸 3D & Cartoon</button>
+  <button class="tbtn" id="tb-swap" onclick="goTab('swap')">🎭 Face/Char Swap</button>
+  <button class="tbtn" id="tb-voice" onclick="goTab('voice')">🎙️ Voice Studio</button>
+</div>
+
+<main>
+  <section id="vw-chat" class="vw">
+    <div class="card">
+      <div class="ch"><span>AI Brain Pool (20+ Models)</span><span class="tag" id="kBadge">Free Mode</span></div>
+      <div class="scroll">
+        <button class="chip sel" onclick="setMod(this,'Auto Router')">⚡ Auto Router</button>
+        <button class="chip" onclick="setMod(this,'Gemini 2.5')">Gemini 2.5</button>
+        <button class="chip" onclick="setMod(this,'ChatGPT o3')">ChatGPT o3</button>
+        <button class="chip" onclick="setMod(this,'Claude 3.7')">Claude 3.7</button>
+        <button class="chip" onclick="setMod(this,'DeepSeek R1')">DeepSeek R1</button>
+        <button class="chip" onclick="setMod(this,'Qwen 3')">Qwen 3</button>
+        <button class="chip" onclick="setMod(this,'Meta Llama 4')">Meta Llama 4</button>
+        <button class="chip" onclick="setMod(this,'Grok 3')">Grok 3</button>
+        <button class="chip" onclick="setMod(this,'Ollama')">Ollama</button>
       </div>
     </div>
-    <div class="header-btns">
-      <button class="pill-btn" onclick="openModal('langModal')"><span id="langFlag">🌐</span> <span id="langText">Auto</span></button>
-      <button class="pill-btn btn-grad" onclick="openModal('authModal')" id="keyBtn">🔑 My API Key</button>
+    <div class="cbox" id="cBox">
+      <div class="mai"><b style="color:#34d399;font-size:10px;">OmniAI Live • 🌐 100+ Languages</b><br>வணக்கம் மச்சான்! இப்போ எல்லா பட்டனும் சூப்பரா வேலை செய்யும்! தமிழ், Tanglish, Hindi, English எதுல வேணாலும் கேள்வி கேளு!</div>
     </div>
-  </header>
-
-  <!-- ON-DEMAND BURST TELEMETRY -->
-  <div id="teleBar" class="telemetry hidden">
-    <div class="tele-top">
-      <span>⚡ On-Demand Cloud Burst Active...</span>
-      <span style="color:#34d399;">500KB TurboQuant</span>
+    <div class="cbar">
+      <input type="text" id="cInp" placeholder="Type in தமிழ், Tanglish, Hindi, English...">
+      <button class="sbtn" onclick="sendMsg()">➤</button>
     </div>
-    <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
-    <div class="tele-sub">
-      <span>90% Quota Guard: Safe</span>
-      <span>3s Heartbeat • Drive Vault</span>
+  </section>
+
+  <section id="vw-court" class="vw hidden">
+    <div class="card">
+      <div class="ch"><span style="color:#fbbf24;">⚖️ Live AI Courtroom</span><span class="tag">User Choice</span></div>
+      <div class="g3">
+        <div><label style="font-size:10px;color:#34d399;">👨‍⚖️ Lawyer 1</label><select id="l1"><option>Gemini 2.5</option><option>ChatGPT o3</option><option>Claude 3.7</option><option>DeepSeek R1</option><option>Grok 3</option></select></div>
+        <div><label style="font-size:10px;color:#f472b6;">👩‍⚖️ Lawyer 2</label><select id="l2"><option>DeepSeek R1</option><option>Claude 3.7</option><option>ChatGPT o3</option><option>Gemini 2.5</option><option>Grok 3</option></select></div>
+        <div><label style="font-size:10px;color:#fbbf24;">⚖️ Judge</label><select id="jg"><option>Claude 3.7</option><option>ChatGPT o3</option><option>Gemini 2.5</option><option>DeepSeek R1</option></select></div>
+      </div>
+      <textarea id="cTop" rows="2" placeholder="Debate Topic (e.g., AI மனிதர்களுக்கு வரமா சாபமா?)"></textarea>
+      <button class="abtn" style="background:linear-gradient(90deg,#f59e0b,#ea580c);color:#000;" onclick="runCourt()">🔨 Start Live Debate & Verdict</button>
+      <div id="cOut" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;font-size:12px;"></div>
     </div>
-  </div>
+  </section>
 
-  <!-- 7 STUDIO TABS -->
-  <div class="tabs-row">
-    <button class="tab-btn active" id="t-chat" onclick="switchTab('chat')">✨ Omni-Chat</button>
-    <button class="tab-btn" id="t-court" onclick="switchTab('court')">⚖️ AI Courtroom</button>
-    <button class="tab-btn" id="t-image" onclick="switchTab('image')">🎨 Live Image</button>
-    <button class="tab-btn" id="t-video" onclick="switchTab('video')">🎬 4K Video</button>
-    <button class="tab-btn" id="t-anim" onclick="switchTab('anim')">🧸 3D & Cartoon</button>
-    <button class="tab-btn" id="t-swap" onclick="switchTab('swap')">🎭 Face/Char Swap</button>
-    <button class="tab-btn" id="t-voice" onclick="switchTab('voice')">🎙️ Voice Studio</button>
-  </div>
+  <section id="vw-image" class="vw hidden">
+    <div class="card">
+      <div class="ch"><span>🎨 Live 4K Image & Text</span><span class="tag">100+ Lang Typography</span></div>
+      <textarea id="iPrm" rows="3" placeholder="Describe image + text in Tamil/English/Hindi..."></textarea>
+      <div class="g2">
+        <div class="sbox sel" onclick="this.classList.toggle('sel')">🔤 100+ Lang Text</div>
+        <div class="sbox" onclick="this.classList.toggle('sel')">📸 85mm Studio Lens</div>
+      </div>
+    </div>
+  </section>
 
-  <main>
-    <!-- 1. OMNI-CHAT -->
-    <section id="v-chat" class="view">
-      <div class="card">
-        <div class="card-header">
-          <span>AI Brain Pool (20+ Models)</span>
-          <span class="tag" id="keyBadge">Free Mode</span>
-        </div>
-        <div class="chips-scroll">
+  <section id="vw-video" class="vw hidden">
+    <div class="card">
+      <div class="ch"><span>🎬 4K Cinema Video & Director</span><span class="tag">Higgsfield + Kling 3.0</span></div>
+      <textarea id="vPrm" rows="2" placeholder="Describe video scene or full short story..."></textarea>
+      <div class="scroll" style="margin-top:8px;">
+        
